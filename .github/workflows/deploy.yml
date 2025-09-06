@@ -8,7 +8,7 @@ on:
 jobs:
     terraform:
         name: Deploy terraform infra to AWS
-        if: github.event_name == 'push' && contains(github.event.head_commit.modified, 'infra/')
+        
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -48,7 +48,7 @@ jobs:
 
     build-frontend:
         name: Build Vue front and upload artifact
-        if: github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/')
+        
         needs: terraform
         runs-on: ubuntu-latest
         steps:
