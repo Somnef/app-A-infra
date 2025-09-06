@@ -49,7 +49,7 @@ jobs:
             - name: Save Terraform output as Ansible inventory
               run: |
                 BASTION=$(terraform output -raw bastion_ip)
-                NODES=$(terraform output -json instances_ips | jq -r '.[]')
+                NODES=$(terraform output -json instance_ips | jq -r '.[]')
                 echo "[bastion]" > ../config/inventory.ini
                 echo "$BASTION" >> ../config/inventory.ini
                 echo "" >> ../config/inventory.ini
