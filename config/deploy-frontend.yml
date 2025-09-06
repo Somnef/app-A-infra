@@ -6,7 +6,7 @@
     app_user: ec2-user
     app_dir: /var/www/vueapp
     nginx_conf_path: /etc/nginx/conf.d/vueapp.conf
-    artifact_path: ../app/dist  # This will be where the GitHub Actions artifact is downloaded
+    artifact_path: ./dist  # This will be where the GitHub Actions artifact is downloaded
 
   tasks:
 
