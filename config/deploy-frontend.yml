@@ -1,0 +1,63 @@
+---
+- name: Deploy Vue frontend
+  hosts: nodes
+  become: yes
+  vars:
+    app_user: ec2-user
+    app_dir: /var/www/vueapp
+    nginx_conf_path: /etc/nginx/conf.d/vueapp.conf
+    artifact_path: ./dist  # This will be where the GitHub Actions artifact is downloaded
+
+  tasks:
+
+    - name: Ensure Nginx is installed
+      amazon.aws.package:
+        name: nginx
+        state: present
+
+    - name: Ensure Nginx is started and enabled
+      systemd:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Ensure app directory exists
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+
+    - name: Copy Vue build to server
+      copy:
+        src: "{{ artifact_path }}/"
+        dest: "{{ app_dir }}/"
+        owner: "{{ app_user }}"
+        group: "{{ app_user }}"
+        mode: '0755'
+      notify:
+        - Reload Nginx
+
+    - name: Configure Nginx for Vue app
+      copy:
+        dest: "{{ nginx_conf_path }}"
+        content: |
+          server {
+              listen 80;
+              server_name _;
+              root {{ app_dir }};
+              index index.html;
+
+              location / {
+                  try_files $uri /index.html;
+              }
+          }
+      notify:
+        - Reload Nginx
+
+  handlers:
+    - name: Reload Nginx
+      systemd:
+        name: nginx
+        state: reloaded
