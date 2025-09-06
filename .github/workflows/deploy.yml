@@ -6,7 +6,9 @@ on:
             - main
 
 jobs:
-    deploy:
+    terraform:
+        name: Deploy terraform infra to AWS
+        if: github.event_name == 'push' && contains(github.event.head_commit.modified, 'infra/')
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v3
@@ -43,3 +45,32 @@ jobs:
 
             - name: Terraform apply
               run: terraform -chdir=infra apply -auto-approve
+
+    build-frontend:
+        name: Build Vue front and upload artifact
+        if: github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/')
+        needs: terraform
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            
+            - name: Install Node
+              uses: actions/setup-node@v3
+              with:
+                node-version: '20'
+
+            - name: Install dependencies
+              run: |
+                cd app
+                npm ci
+
+            - name: Build
+              run: |
+                cd app
+                npm run build
+
+            - name: Upload built artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: frontend-build
+                path: app/dist
