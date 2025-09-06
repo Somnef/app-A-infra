@@ -46,6 +46,30 @@ jobs:
             - name: Terraform apply
               run: terraform -chdir=infra apply -auto-approve
 
+            - name: Save Terraform output as Ansible inventory
+              run: |
+                BASTION=$(terraform output -raw bastion_ip)
+                NODES=$(terraform output -json instances_ips | jq -r '.[]')
+                echo "[bastion]" > ../config/inventory.ini
+                echo "$BASTION" >> ../config/inventory.ini
+                echo "" >> ../config/inventory.ini
+                echo "[nodes]" >> ../config/inventory.ini
+                for node in $NODES; do
+                    echo "$node" >> ../config/inventory.ini
+                done
+                echo "" >> ../config/inventory.ini
+                echo "[nodes:vars]" >> ../config/inventory.ini
+                echo "ansible_user=ec2-user" >> ../config/inventory.ini
+                echo "ansible_ssh_private_key_file=../infra/modules/ec2/keys/id_rsa" >> ../config/inventory.ini
+                echo "ansible_ssh_common_args='-o ProxyCommand=\"ssh -W %h:%p -q ec2-user@$BASTION -i ../infra/modules/ec2/keys/id_rsa\"'" >> ../config/inventory.ini
+
+            - name: Upload inventory artifact
+              uses: actions/upload-artifact@v4
+              with:
+                name: inventory
+                path: config/inventory.ini
+
+
     build-frontend:
         name: Build Vue front and upload artifact
         
@@ -75,10 +99,27 @@ jobs:
                 name: frontend-build
                 path: app/dist
 
-    ansible:
-        name: Run playbook to deploy app on servers
-        needs: build-frontend
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+    # ansible:
+    #     name: Run playbook to deploy app on servers
+    #     needs: build-frontend
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - uses: actions/checkout@v3
             
+    #         - name: Download built artifact
+    #           uses: actions/download-artifact@v4
+    #           with:
+    #             name: frontend-build
+    #             path: dist/
+                
+    #         - name: Download inventory artifact
+    #           uses: actions/download-artifact@v4
+    #           with:
+    #             name: inventory
+    #             path: config/inventory.ini
+
+    #         - name: Run Ansible Playbook
+    #           uses: ansible/ansible-runner-action@v2
+    #           with:
+    #             inventory: config/inventory.ini
+    #             playbook: ansible/deploy-frontend.yml

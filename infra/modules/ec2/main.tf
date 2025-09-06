@@ -17,10 +17,6 @@ until curl -s --head http://www.google.com > /dev/null; do
     sleep 5
 done
 yum update -y
-yum install -y httpd
-systemctl start httpd
-systemctl enable httpd
-echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
 EOF
 	
 	tags = {
