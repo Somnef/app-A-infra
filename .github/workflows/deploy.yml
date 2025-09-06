@@ -36,10 +36,10 @@ jobs:
                 echo "BACKEND_FILE=$BACKEND_FILE" >> $GITHUB_ENV
 
             - name: Terraform init
-              run: terraform init -backend-config=$BACKEND_FILE
+              run: terraform -chdir=infra init -backend-config=$BACKEND_FILE
 
             - name: Terraform plan
-              run: terraform plan
+              run: terraform -chdir=infra plan
 
             - name: Terraform apply
-              run: terraform apply -auto-approve
+              run: terraform -chdir=infra apply -auto-approve
