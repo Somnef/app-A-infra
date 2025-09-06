@@ -1,0 +1,24 @@
+name: Debug SSH
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ssh-debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | base64 --decode > ./id_rsa
+          chmod 600 ./id_rsa
+
+      - name: Test SSH to bastion
+        run: |
+          ssh -i ./id_rsa ec2-user@13.38.24.85 "echo hello"
+
+      - name: Test SSH to node via bastion
+        run: |
+          ssh -o ProxyCommand="ssh -W %h:%p -i ./id_rsa ec2-user@13.38.24.85" ec2-user@10.0.4.204 "echo hello"
