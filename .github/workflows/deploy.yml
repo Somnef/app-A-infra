@@ -50,24 +50,24 @@ jobs:
               run: |
                 BASTION=$(terraform -chdir=infra output -raw bastion_ip)
                 NODES=$(terraform -chdir=infra output -json instance_ips | jq -r '.[]')
-                echo "[bastion]" > ../config/inventory.ini
-                echo "$BASTION" >> ../config/inventory.ini
-                echo "" >> ../config/inventory.ini
-                echo "[nodes]" >> ../config/inventory.ini
+                echo "[bastion]" > inventory.ini
+                echo "$BASTION" >> inventory.ini
+                echo "" >> inventory.ini
+                echo "[nodes]" >> inventory.ini
                 for node in $NODES; do
-                    echo "$node" >> ../config/inventory.ini
+                    echo "$node" >> inventory.ini
                 done
-                echo "" >> ../config/inventory.ini
-                echo "[nodes:vars]" >> ../config/inventory.ini
-                echo "ansible_user=ec2-user" >> ../config/inventory.ini
-                echo "ansible_ssh_private_key_file=../infra/modules/ec2/keys/id_rsa" >> ../config/inventory.ini
-                echo "ansible_ssh_common_args='-o ProxyCommand=\"ssh -W %h:%p -q ec2-user@$BASTION -i ../infra/modules/ec2/keys/id_rsa\"'" >> ../config/inventory.ini
+                echo "" >> inventory.ini
+                echo "[nodes:vars]" >> inventory.ini
+                echo "ansible_user=ec2-user" >> inventory.ini
+                echo "ansible_ssh_private_key_file=../infra/modules/ec2/keys/id_rsa" >> inventory.ini
+                echo "ansible_ssh_common_args='-o ProxyCommand=\"ssh -W %h:%p -q ec2-user@$BASTION -i ../infra/modules/ec2/keys/id_rsa\"'" >> inventory.ini
 
             - name: Upload inventory artifact
               uses: actions/upload-artifact@v4
               with:
                 name: inventory
-                path: config/inventory.ini
+                path: inventory.ini
 
 
     build-frontend:
