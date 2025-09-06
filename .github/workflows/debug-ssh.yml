@@ -17,7 +17,8 @@ jobs:
 
       - name: Test SSH to bastion
         run: |
-          ssh -i ./id_rsa ec2-user@13.38.24.85 "echo hello"
+      	  export ANSIBLE_HOST_KEY_CHECKING=False
+      	  ssh -i ./id_rsa ec2-user@13.38.24.85 "echo hello"
 
       - name: Test SSH to node via bastion
         run: |

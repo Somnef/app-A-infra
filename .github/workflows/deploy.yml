@@ -3,7 +3,7 @@ name: Terraform CI/CD
 on:
     push:
         branches:
-            - main
+            - test # CHANGE BACK TO main LATER
 
 jobs:
     terraform:
