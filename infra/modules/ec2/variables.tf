@@ -29,6 +29,6 @@ variable "instance_count" {
 
 variable "use_bastion" {
 	type = bool
-	default = false
+	default = true
 	description = "Set to true to spawn a bastion host"
 }
