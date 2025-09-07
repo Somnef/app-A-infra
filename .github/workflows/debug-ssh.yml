@@ -39,3 +39,4 @@ jobs:
         run: |
           cd config
           ansible -i ./inventory.ini nodes -m ping
+          ansible-playbook -i ./inventory.ini deploy-frontend.yml

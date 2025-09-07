@@ -3,7 +3,7 @@ name: Terraform CI/CD
 on:
     push:
         branches:
-            - main
+            - test # CHANGE TO MAIN
 
 jobs:
     terraform:
@@ -137,4 +137,4 @@ jobs:
                 ANSIBLE_HOST_KEY_CHECKING: False
               run: |
                 cd config
-                ansible-playbook -i inventory.ini deploy-frontend.yml
+                ansible-playbook -i ./inventory.ini deploy-frontend.yml
