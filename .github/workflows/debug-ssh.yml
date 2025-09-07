@@ -17,7 +17,8 @@ jobs:
 
       - name: Test SSH to bastion
         run: |
-          export ANSIBLE_HOST_KEY_CHECKING=False
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 13.38.24.85 >> ~/.ssh/known_hosts
           ssh -i ./id_rsa ec2-user@13.38.24.85 "echo hello"
 
       - name: Test SSH to node via bastion
