@@ -129,7 +129,7 @@ jobs:
                 chmod 600 ./config/id_rsa
 
                 mkdir -p ~/.ssh
-                export BASTION=$(grep -A1 "\[bastion\]" inventory.ini | tail -n1)
+                export BASTION=$(grep -A1 "\[bastion\]" ./config/inventory.ini | tail -n1)
                 ssh-keyscan -H $BASTION >> ~/.ssh/known_hosts
 
             - name: Install Ansible
