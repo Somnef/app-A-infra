@@ -10,6 +10,11 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Install Ansible
+        run: |
+          sudo apt update
+          sudo apt install -y ansible
+
       - name: Set up SSH key
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | base64 --decode > ./id_rsa
@@ -24,11 +29,6 @@ jobs:
       - name: Test SSH to node via bastion
         run: |
           ssh -i ./id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@35.180.88.96" ec2-user@10.0.4.94 "echo hello"
-
-      - name: Install Ansible
-        run: |
-          sudo apt update
-          sudo apt install -y ansible
       
       - name: Ansible ping hosts 
         env:
