@@ -19,9 +19,8 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           ssh-keyscan -H 13.38.24.85 >> ~/.ssh/known_hosts
-          ssh-keyscan -H 10.0.4.204 >> ~/.ssh/known_hosts
           ssh -i ./id_rsa ec2-user@13.38.24.85 "echo hello"
 
       - name: Test SSH to node via bastion
         run: |
-          ssh -o ProxyCommand="ssh -W %h:%p -i ./id_rsa ec2-user@13.38.24.85" ec2-user@10.0.4.204 "echo hello"
+          ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@13.38.24.85" ec2-user@10.0.4.204 "echo hello"
