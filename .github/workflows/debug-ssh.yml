@@ -1,4 +1,4 @@
-name: Debug Ansible
+name: Debug SSH
 
 on:
   workflow_dispatch:
@@ -14,6 +14,16 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | base64 --decode > ./id_rsa
           chmod 600 ./id_rsa
+
+      - name: Test SSH to bastion
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H 35.180.88.96 >> ~/.ssh/known_hosts
+          ssh -i ./id_rsa ec2-user@35.180.88.96 "echo hello"
+
+      - name: Test SSH to node via bastion
+        run: |
+          ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@35.180.88.96" ec2-user@10.0.4.94 "echo hello"
 
       - name: Install Ansible
         run: |
