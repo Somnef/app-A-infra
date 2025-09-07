@@ -62,7 +62,7 @@ jobs:
                 echo "[nodes:vars]" >> ./inventory/inventory.ini
                 echo "ansible_user=ec2-user" >> ./inventory/inventory.ini
                 echo "ansible_ssh_private_key_file=./id_rsa" >> ./inventory/inventory.ini
-                echo "ansible_ssh_common_args='-i ./id_rsa -o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -q ec2-user@$BASTION -i ./id_rsa\"'" >> ./inventory/inventory.ini
+                echo "ansible_ssh_common_args='-o ProxyCommand=\"ssh -W %h:%p -q ec2-user@$BASTION -i ./id_rsa\"'" >> ./inventory/inventory.ini
 
             - name: Upload inventory artifact
               uses: actions/upload-artifact@v4
