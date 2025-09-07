@@ -23,7 +23,7 @@ jobs:
 
       - name: Test SSH to node via bastion
         run: |
-          ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@35.180.88.96" ec2-user@10.0.4.94 "echo hello"
+          ssh -i ./id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@35.180.88.96" ec2-user@10.0.4.94 "echo hello"
 
       - name: Install Ansible
         run: |
