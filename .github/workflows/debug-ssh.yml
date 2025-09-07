@@ -23,4 +23,4 @@ jobs:
 
       - name: Test SSH to node via bastion
         run: |
-          ssh -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@13.38.24.85" ec2-user@10.0.4.204 "echo hello"
+          ssh -i ./id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@13.38.24.85" ec2-user@10.0.4.204 "echo hello"
