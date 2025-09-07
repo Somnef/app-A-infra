@@ -17,17 +17,20 @@ jobs:
 
       - name: Set up SSH key
         run: |
+          cd config
           echo "${{ secrets.SSH_PRIVATE_KEY_B64 }}" | base64 --decode > ./id_rsa
           chmod 600 ./id_rsa
 
       - name: Test SSH to bastion
         run: |
+          cd config
           mkdir -p ~/.ssh
           ssh-keyscan -H 35.180.88.96 >> ~/.ssh/known_hosts
           ssh -i ./id_rsa ec2-user@35.180.88.96 "echo hello"
 
       - name: Test SSH to node via bastion
         run: |
+          cd config
           ssh -i ./id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="ssh -i ./id_rsa -W %h:%p ec2-user@35.180.88.96" ec2-user@10.0.4.94 "echo hello"
       
       - name: Ansible ping hosts 
@@ -35,4 +38,4 @@ jobs:
           ANSIBLE_HOST_KEY_CHECKING: False
         run: |
           cd config
-          ansible -i inventory.ini nodes -m ping
+          ansible -i ./inventory.ini nodes -m ping
