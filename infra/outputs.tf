@@ -7,3 +7,8 @@ output "instance_ips" {
 	value = module.ec2.instance_ips
 	description = "Private IP addresses of the server instances"
 }
+
+output "alb_dns" {
+	value = module.alb.alb_dns
+	description = "DNS of the ALB"
+}

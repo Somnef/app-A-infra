@@ -10,3 +10,7 @@ output "alb_sg_id" {
 output "alb_subnet_ids" {
   value = data.aws_subnets.subnets.ids
 }
+
+output "alb_dns" {
+	value = aws_alb.alb.dns_name
+}
